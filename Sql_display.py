@@ -24,6 +24,7 @@ from PyQt5 import uic
 # from fileModule import *
 import sys
 import sqlite3
+import random
 
 # Create dBase and create cursor
 conn = sqlite3.connect("test.db")
@@ -88,10 +89,13 @@ class UI(QMainWindow):
 
         self.actExit.triggered.connect(self.closeEvent)
 
-        self.stackedWidget.setCurrentWidget(self.Search)
+        #self.stackedWidget.setCurrentWidget(self.Search)
+        self.stackedWidget.setCurrentWidget(self.Results)
 
         # Show the app
         self.show()
+
+        self.get_random_index()
 
     def search_firstname(self):
         print("Searching through FIRST names")
@@ -140,7 +144,8 @@ class UI(QMainWindow):
         selection = self.txtGetIndex.text()
         conn = sqlite3.connect("test.db")  # Opening dB for reading
         c = conn.cursor()
-        c.execute(f"SELECT * FROM people WHERE id ='{selection}'")
+        # Retrieving selected record.  Record Identified by selection variable
+        c.execute(f"SELECT * FROM people WHERE id ='{selection}'")  
         rlist = c.fetchone()
         print(rlist)
         print(f"{rlist[0]}, {rlist[1]}, {rlist[2]}, {rlist[3]}, {rlist[4]}")
@@ -151,6 +156,24 @@ class UI(QMainWindow):
 
         # Go to Results Page/Widget
         self.stackedWidget.setCurrentWidget(self.Results)
+
+    def get_random_index(self):
+        min_value = 1
+        max_value = 7
+        random_index = random.randint(min_value, max_value)
+        print(random_index)
+        conn = sqlite3.connect("test.db")  # Opening dB for reading
+        c = conn.cursor()
+        # Retrieving selected record.  Record Identified by selection variable
+        c.execute(f"SELECT * FROM people WHERE id ='{random_index}'")  
+        rlist = c.fetchone()
+        print(rlist)
+        print(f"{rlist[0]}, {rlist[1]}, {rlist[2]}, {rlist[3]}, {rlist[4]}")
+        self.lblResults_Name.setText(f"{rlist[1]} {rlist[2]}")
+        self.lblResults_Age.setText(str(rlist[5]))
+        self.lblResults_Email.setText(rlist[3])
+        self.lblResults_Town.setText(rlist[4])
+
         
 
 
